@@ -29,6 +29,7 @@ As made popular by Docker
 ---
 # Containers are Great
 
+- For building applications
 - For shipping applications
 - For development environments
 
@@ -44,7 +45,7 @@ As made popular by Docker
 * It didn't all start with Docker
 * It didn't even start in this century :)
 * Unix has had `chroot` since Forever 🦖
-* FreeBSD 4.0 introduced Jails in Year 2K
+* FreeBSD 4.0 introduced Jails in 2000
 * Linux Containers (LXC) shipped in 2008
 
 ---
@@ -54,45 +55,109 @@ As made popular by Docker
 * Everyone can *use containers*
 * Everyone can *make containers*
 * Everyone can *share containers*
+* Even on Mac and Windows
 
 ---
-# Mac and Windows
+# Docker on Mac and Windows
 
-* Tough luck, no containers for you folks!
-* 💡 But wait, we can run Linux in a VM!
-* And that's exactly what Docker does
-* With a ton of glue and duct tape
+* Containers run in a VM managed by Docker
+* Performance is not great, but adequate
+
+---
+# Native Windows Containers
+
+* A closed ecosystem
+* Late to the party
+* Kind of supported by Docker Desktop
+* Not covered in this talk
 
 ---
 # Docker Desktop
 
-- Recommended on MacOS and Windows.
-- Free for personal use and educational purposes.
-- Requires a subscription if you use it for business at Progress.
+- Recommended on MacOS and Windows
+- Free for personal use and educational purposes
+- Requires a subscription if you use it for business at Progress
 
 ---
 # Alternatives to Docker
 
-- Podman is a drop-in replacement for Docker
+- Podman is a drop-in replacement for Docker Engine (runtime and CLI)
 - Podman is not a complete replacement for Docker Desktop
 
----
-# Let's Build a Container
-
-- Goal: Development Environment for Node.JS and .NET Core
-- Sample project at ...
+--
+https://podman.io/getting-started/installation
 
 ---
-# The DOCKERFILE
+# Let's Build a Container Image
 
-- Base Image
-- Dependencies
-- Layers
+- Goal: Build and run a Node.JS application
+
+https://github.com/tsvetomir/presentations/tree/main/intro-to-docker/node-app
 
 ---
-# Executing the Container
+# Anatomy of a Dockerfile
+
+* Use Node.js 18 image
+    ```Dockerfile
+    FROM node:18-slim
+    ```
+* Copy the application source in `/app`
+    ```Dockerfile
+    RUN mkdir /app
+    COPY . /app
+    ```
+* Install dependencies and build app
+    ```Dockerfile
+    WORKDIR /app
+    RUN npm ci && npm run build
+    ```
+* Configure and run app
+    ```Dockerfile
+    ENV APP_PORT=3000
+    CMD ["node", "index.js"]
+    ```
+
+https://docs.docker.com/engine/reference/builder/
+
+---
+# Build the Image
+
+`docker build -t hello-docker .`
+
+==Video==
+
+---
+# Layers
+
+- Each command creates a file system layer.
+- Layers are read-only snapshots.
+- Layers reduce build times and allow sharing.
+- Layers can be squashed into one.
+
+`docker history hello-docker`
+
+---
+# Creating the Container
 
 - Syntax
+- Volumes
+- Networking
+- One-time runs
+  `docker run --rm --init -it -p 3000:3000 hello-docker`
+
+---
+# .NET Core container
+
+---
+# VSCode Development Containers
+
+---
+# Tips & Tricks
+
+  - Use Debian Stable as base (v11 Bullseye as of today)
+  - Prefer official base images for common software stacks
+  - Don't worry too much about image size
+  -
 
 ---
 # Deploying Containers
