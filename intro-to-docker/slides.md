@@ -17,14 +17,14 @@ As made popular by Docker
 ---
 # A container...
 
-* *Is not* a Virtual Machine
-* *Does not* have a complete Operating System
+- *Is not* a Virtual Machine
+- *Does not* have a complete Operating System
 
 ---
 # A container...
 
-* *Is* a Virtual Environment
-* *Is* running on the host Operating System
+- *Is* a Virtual Environment
+- *Is* running on the host Operating System
 
 ---
 # Containers are Great
@@ -34,47 +34,46 @@ As made popular by Docker
 - For development environments
 
 ---
-# Containers Suck
+# Containers are Not So Great
 
 - For security isolation
-- But can be made reasonably secure
 
 ---
 # A history note
 
-* It didn't all start with Docker
-* It didn't even start in this century :)
-* Unix has had `chroot` since Forever 🦖
-* FreeBSD 4.0 introduced Jails in 2000
-* Linux Containers (LXC) shipped in 2008
+- It didn't all start with Docker
+- It didn't even start in this century :)
+- Unix has had `chroot` since Forever 🦖
+- FreeBSD introduced Jails in 2000
+- Linux Containers (LXC) shipped in 2008
 
 ---
 # Then Docker came along...
 
-* And **nailed it** with ease of use
-* Everyone can *use containers*
-* Everyone can *make containers*
-* Everyone can *share containers*
-* Even on Mac and Windows
+- And **nailed it** with ease of use
+- Everyone can *use containers*
+- Everyone can *make containers*
+- Everyone can *share containers*
+- Even on Mac and Windows
 
 ---
 # Docker on Mac and Windows
 
-* Containers run in a VM managed by Docker
-* Performance is not great, but adequate
+- Linux containers run in a VM managed by Docker
+- Performance is not great, but adequate
 
 ---
 # Native Windows Containers
 
-* A closed ecosystem
-* Late to the party
-* Kind of supported by Docker Desktop
-* Not covered in this talk
+- A closed ecosystem – Windows Containers do not run on Linux
+- Late to the party
+- Supported by Docker Desktop (kind of)
+- Not covered in this talk
 
 ---
 # Docker Desktop
 
-- Recommended on MacOS and Windows
+- Recommended on Mac and Windows
 - Free for personal use and educational purposes
 - Requires a subscription if you use it for business at Progress
 
@@ -88,100 +87,149 @@ As made popular by Docker
 https://podman.io/getting-started/installation
 
 ---
+# Glossary
+
+- Dockerfile describe the steps to build a container
+- Building the Dockerfile produces an image
+- Images are immutable
+- Images can be shared publicly or privately
+- You can run multiple instances from the same image
+
+---
 # Let's Build a Container Image
 
-- Goal: Build and run a Node.JS application
+- Demo: Build and run a Node.JS application
+
+==Video of the app==
 
 https://github.com/tsvetomir/presentations/tree/main/intro-to-docker/node-app
 
 ---
 # Anatomy of a Dockerfile
 
-* Use Node.js 18 image
+- Use official Node.js 18 image as base
     ```Dockerfile
     FROM node:18-slim
     ```
-* Copy the application source in `/app`
+- Copy the application source in `/app`
     ```Dockerfile
     RUN mkdir /app
     COPY . /app
     ```
-* Install dependencies and build app
+- Install dependencies
     ```Dockerfile
     WORKDIR /app
-    RUN npm ci && npm run build
+    RUN npm ci && npm cache clean -f
     ```
-* Configure and run app
+- Configure and run app
     ```Dockerfile
     ENV APP_PORT=3000
     CMD ["node", "index.js"]
     ```
 
 https://docs.docker.com/engine/reference/builder/
+https://docs.docker.com/develop/develop-images/dockerfile_best-practices
 
 ---
 # Build the Image
 
-`docker build -t hello-docker .`
+- Choose a name and run:
+  `docker build -t node-app .`
+- Image is now stored on your computer
+- Can be published to a registry
 
-==Video==
+![bg right fit](./screenshots/01-build.png)
+--
+https://docs.docker.com/engine/reference/commandline/build/
 
 ---
 # Layers
 
-- Each command creates a file system layer.
-- Layers are read-only snapshots.
-- Layers reduce build times and allow sharing.
-- Layers can be squashed into one.
+- Each `COMMAND` creates a layer
+- A layer is a snapshot of the file system
+- Layers are cached and shared between builds
+- Extra layers can increase image size
+  `RUN npm ci && npm cache clean -f`
+- To see all image layers, run:
+  `docker history node-app`
 
-`docker history hello-docker`
-
----
-# Creating the Container
-
-- Syntax
-- Volumes
-- Networking
-- One-time runs
-  `docker run --rm --init -it -p 3000:3000 hello-docker`
+![bg right fit](./screenshots/02-history.png)
 
 ---
-# .NET Core container
+# Container lifecycle
+
+- Create a container instance
+  `docker create` or `docker run`
+- Start / Stop a container
+  `docker start` / `docker stop`
+- Pause / Unpause a container
+  `docker pause` / `docker unpause`
+- Delete a container
+  `docker rm`
+- List containers
+  `docker ps`
+
+![bg right fit](./screenshots/03-ps.png)
 
 ---
-# VSCode Development Containers
+# Running the Container
+
+- Run and dispose
+  `docker run --rm --init -it -p 3000:3000 node-app`
+- Run and keep
+  `docker run -d --init -p 3000:3000 --name node-app-1 node-app`
+
+--
+https://docs.docker.com/engine/reference/commandline/run/
 
 ---
-# Tips & Tricks
+# .NET Core containers
 
-  - Use Debian Stable as base (v11 Bullseye as of today)
-  - Prefer official base images for common software stacks
+- Demo: .NET Core App
+
+==Dockerfile Screenshot==
+
+---
+# Multi-stage builds
+
+==Anatomy of a Dockerfile==
+
+---
+# Accessing files outside the container
+
+- Bind mounts
+- Demo: Look, no Dockerfile!
+  `docker run --rm -it -v $(pwd):/app/ -w /app mcr.microsoft.com/dotnet/sdk:7.0 /bin/bash`
+
+--
+https://github.com/dotnet/dotnet-docker/blob/main/samples/run-in-sdk-container.md
+
+---
+# Tips & Tricks for Images
+
+  - Prefer official images for common software stacks
+  - Otherwise, use Debian Linux as base
   - Don't worry too much about image size
-  -
+
+--
+https://github.com/tsvetomir/presentations/tree/main/intro-to-docker/node-app-debian
 
 ---
-# Deploying Containers
+# Bonus: Debug a build
 
-- Containers Images and Runtimes are open standards (OCI)
-- Docker is not required to run containers
-- Demo with Azure Container Apps?
+- Demo: Teaser (Act)
 
 ---
-# Containers for CI
+# Poll - Next Topics
 
-- Teaser (Act)
-- More in the Next Episode
-
----
-# Conclusions
-
-* Use Podman as a drop-in replacement for Docker.
-* Deploy your containers on Linux for maximum performance.
-* Don't rely just on containers for security.
+- VSCode Development Containers
+- Containers for CI
+- Deploying Container Apps
+- Windows Containers
 
 
 
----
+--
 
-You’ll learn how to set up Docker Desktop and create development environments for Node.js and .NET Core applications.
-Finally, we’ll put those skills to use in order to troubleshoot a failing build in GitHub Actions.
+.NET App - ASP.NET
+Troubleshooting a build demo

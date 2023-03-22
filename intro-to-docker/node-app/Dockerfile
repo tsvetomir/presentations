@@ -9,8 +9,8 @@ RUN mkdir /app
 COPY . /app
 WORKDIR /app
 
-# Install dependencies and build app
-RUN npm ci && npm run build
+# Install dependencies
+RUN npm ci && npm cache clean -f
 
 # Configure and run app
 ENV APP_PORT=3000
