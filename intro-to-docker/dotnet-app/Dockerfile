@@ -18,4 +18,8 @@ WORKDIR /App
 
 # Copy and run app
 COPY --from=build-env ./App/out .
-ENTRYPOINT ["./DotNet.Docker"]
+ENV ASPNETCORE_URLS=http://*:3000
+ENTRYPOINT ["dotnet", "dotnet-app.dll"]
+
+
+

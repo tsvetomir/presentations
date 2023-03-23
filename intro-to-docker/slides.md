@@ -18,7 +18,7 @@ As made popular by Docker
 # A container...
 
 - *Is not* a Virtual Machine
-- *Does not* have a complete Operating System
+- *Does not* have an Operating System
 
 ---
 # A container...
@@ -65,8 +65,8 @@ As made popular by Docker
 ---
 # Native Windows Containers
 
-- A closed ecosystem – Windows Containers do not run on Linux
-- Late to the party
+- A closed ecosystem
+- A bit late to the party
 - Supported by Docker Desktop (kind of)
 - Not covered in this talk
 
@@ -75,12 +75,12 @@ As made popular by Docker
 
 - Recommended on Mac and Windows
 - Free for personal use and educational purposes
-- Requires a subscription if you use it for business at Progress
+- Requires a subscription if you use it for business
 
 ---
 # Alternatives to Docker
 
-- Podman is a drop-in replacement for Docker Engine (runtime and CLI)
+- Podman is a drop-in replacement for Docker Engine
 - Podman is not a complete replacement for Docker Desktop
 
 --
@@ -127,9 +127,6 @@ https://github.com/tsvetomir/presentations/tree/main/intro-to-docker/node-app
     CMD ["node", "index.js"]
     ```
 
-https://docs.docker.com/engine/reference/builder/
-https://docs.docker.com/develop/develop-images/dockerfile_best-practices
-
 ---
 # Build the Image
 
@@ -174,13 +171,10 @@ https://docs.docker.com/engine/reference/commandline/build/
 ---
 # Running the Container
 
-- Run and dispose
-  `docker run --rm --init -it -p 3000:3000 node-app`
-- Run and keep
+- Create and run
   `docker run -d --init -p 3000:3000 --name node-app-1 node-app`
-
---
-https://docs.docker.com/engine/reference/commandline/run/
+- Create, run and remove on exit
+  `docker run --rm --init -it -p 3000:3000 node-app`
 
 ---
 # .NET Core containers
@@ -197,12 +191,7 @@ https://docs.docker.com/engine/reference/commandline/run/
 ---
 # Accessing files outside the container
 
-- Bind mounts
 - Demo: Look, no Dockerfile!
-  `docker run --rm -it -v $(pwd):/app/ -w /app mcr.microsoft.com/dotnet/sdk:7.0 /bin/bash`
-
---
-https://github.com/dotnet/dotnet-docker/blob/main/samples/run-in-sdk-container.md
 
 ---
 # Tips & Tricks for Images
@@ -211,25 +200,15 @@ https://github.com/dotnet/dotnet-docker/blob/main/samples/run-in-sdk-container.m
   - Otherwise, use Debian Linux as base
   - Don't worry too much about image size
 
---
-https://github.com/tsvetomir/presentations/tree/main/intro-to-docker/node-app-debian
+---
+# Poll - Next Topics
+
+- Containers in GitHub Actions
+- Deploying Container Apps
+- VS Code Development Containers
+- Windows Containers
 
 ---
 # Bonus: Debug a build
 
 - Demo: Teaser (Act)
-
----
-# Poll - Next Topics
-
-- VSCode Development Containers
-- Containers for CI
-- Deploying Container Apps
-- Windows Containers
-
-
-
---
-
-.NET App - ASP.NET
-Troubleshooting a build demo
